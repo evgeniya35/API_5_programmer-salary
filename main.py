@@ -45,19 +45,36 @@ def predict_rub_salary_page_hh(vacancies):
             salaries.append(vacancy["salary"]["to"] * 0.8)
     return salaries
 
+def predict_salary(salary_from, salary_to):
+    # TODO common prediction logic
+    pass
+
+def predict_rub_salary_sj(vacancy):
+    # TODO return number or None
+    pass
+
+def predict_rub_salary_hh(vacancy):
+    # TODO return number or None
+    pass
 
 def fetch_vacancies_hh(language, area=1):
     payload = {"text": f"Программист {language}", "area": area}
     salaries = list()
+    all_vacancies = []
     for page in count(0):
         payload.update({"page": page})
         page_response = requests.get("https://api.hh.ru/vacancies", params=payload)
         page_response.raise_for_status()
         page_data = page_response.json()
         vacancies_found = page_data["found"]
+        all_vacancies.append(page_data["items"])
         if page >= page_data["pages"]:
             break
+    for vacancy in all_vacancies:
+        predict_rub_salary_hh(vacancy)
+
         salaries += predict_rub_salary_page_hh(page_data["items"])
+
     return dict([
         ("vacancies_found", vacancies_found),
         ("vacancies_processed", len(salaries)),
@@ -93,9 +110,9 @@ def main():
     languages = ["python", "java", "PHP", "1C"]
     vacancies_summary_hh = dict()
     vacancies_summary_sj = dict()
-    for language in languages:
-        vacancies_summary_hh[language] = fetch_vacancies_hh(language, 66)
-        vacancies_summary_sj[language] = fetch_vacancies_sj(language, sj_secret_key, 4)
+    #for language in languages:
+        #vacancies_summary_hh[language] = fetch_vacancies_hh(language, 66)
+        #vacancies_summary_sj[language] = fetch_vacancies_sj(language, sj_secret_key, 4)
     #with open("hh.json", "w") as f:
     #    json.dump(vacancies_summary_hh, f)
     print(lang_table(vacancies_summary_hh, "HeadHunter Moscow"))
