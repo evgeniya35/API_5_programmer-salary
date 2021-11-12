@@ -13,7 +13,7 @@ git clone https://github.com/evgeniya35/programmer-salary.git
 ```bash
 pip install -r requirements.txt
 ```
-4. Создайте фай `.env` и поместите в него секретный ключ SuperJob. Пример файла:
+4. Создайте файл `.env` и поместите в него секретный ключ SuperJob. Пример файла:
 ```bash
 SJ_SECRET_KEY={Your secret key for API SuberJob}
 ```
