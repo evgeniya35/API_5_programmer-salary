@@ -36,7 +36,7 @@ def predict_salary(salary_from, salary_to):
 
 def predict_rub_salary_sj(vacancy):
     if not vacancy["payment_from"] and not vacancy["payment_to"] \
-        or vacancy["currency"] != "rub":
+            or vacancy["currency"] != "rub":
         return None
     return predict_salary(vacancy["payment_from"], vacancy["payment_to"])
 
@@ -47,10 +47,10 @@ def predict_rub_salary_hh(vacancy):
     return predict_salary(vacancy["salary"]["from"], vacancy["salary"]["to"])
 
 
-def agregate_hh_vacancies(vacancies):
+def agregate_vacancies(vacancies, predict_rub_salary):
     salaries = []
     for vacancy in vacancies:
-        salary = predict_rub_salary_hh(vacancy)
+        salary = predict_rub_salary(vacancy)  # predict_rub_salary = predict_rub_salary_hh, predict_rub_salary_sj
         if salary:
             salaries.append(int(salary))
     return salaries
@@ -64,7 +64,6 @@ def find_hh_vacancies(language, area=1):
         }
     all_vacancies = []
     for page in count(0):
-        # if payload["per_page"] * (page + 1) >= 2000: break
         payload.update({"page": page})
         page_response = requests.get(
             "https://api.hh.ru/vacancies",
@@ -73,12 +72,11 @@ def find_hh_vacancies(language, area=1):
         page_response.raise_for_status()
         vacancies = page_response.json()
         all_vacancies.extend(vacancies["items"])
-        if page >= vacancies["pages"] - 10:
+        if page >= vacancies["pages"] - 1:
             break
-    vacancies_found = vacancies["found"]
-    salaries = agregate_hh_vacancies(all_vacancies)
+    salaries = agregate_vacancies(all_vacancies, predict_rub_salary_hh)
     return {
-        "vacancies_found": vacancies_found,
+        "vacancies_found": vacancies["found"],
         "vacancies_processed": len(salaries),
         "average_salary": int(mean(salaries))
     }
@@ -105,13 +103,9 @@ def find_sj_vacancies(language, sj_secret_key, town=4):
         all_vacancies.extend(vacancies["objects"])
         if not vacancies["more"]:
             break
-    vacancies_found = vacancies["total"]
-    for vacancy in all_vacancies:
-        salary = predict_rub_salary_sj(vacancy)
-        if salary:
-            salaries.append(int(salary))
+    salaries = agregate_vacancies(all_vacancies, predict_rub_salary_sj)
     return {
-        "vacancies_found": vacancies_found,
+        "vacancies_found": vacancies["total"],
         "vacancies_processed": len(salaries),
         "average_salary": int(mean(salaries))
     }
