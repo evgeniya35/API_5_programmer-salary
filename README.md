@@ -21,7 +21,7 @@ SJ_SECRET_KEY={Your secret key for API SuberJob}
 ### Как запустить
 Дла запуска используйте команду:
 ```bash
-python main.php
+python main.py
 ```
 Программа выведет в консль анализ средних зарплат предлагаемых вакансий (пример):
 ```
