@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from terminaltables import SingleTable
 
 
-def print_vacancies(vacancies_stat, title):
+def make_table(vacancies_stat, title):
     rows = list()
     rows.append([
         "Язык программирования",
@@ -56,7 +56,7 @@ def agregate_vacancies(vacancies, predict_rub_salary):
     return salaries
 
 
-def find_hh_vacancies(language, area=1):
+def find_stat_hh_vacancies(language, area=1):
     payload = {
         "text": f"Программист {language}",
         "area": area,
@@ -82,7 +82,7 @@ def find_hh_vacancies(language, area=1):
     }
 
 
-def find_sj_vacancies(language, sj_secret_key, town=4):
+def find_stat_sj_vacancies(language, sj_secret_key, town=4):
     payload = {
         "keyword": f"Программист {language}",
         "town": town,
@@ -119,13 +119,10 @@ def main():
     town 12-Нижний Новгород, 4-Москва, 25-Краснодар... https://api.superjob.ru/2.0/towns/
     """
     languages = ["Python", "Java", "1C"]
-    vacancies_summary_hh = dict()
-    vacancies_summary_sj = dict()
-    for language in languages:
-        vacancies_summary_hh[language] = find_hh_vacancies(language, 1)
-        vacancies_summary_sj[language] = find_sj_vacancies(language, sj_secret_key, 4)
-    print(print_vacancies(vacancies_summary_hh, "HeadHunter Moscow"))
-    print(print_vacancies(vacancies_summary_sj, "Supejob Moscow"))
+    vacancies_summary_hh = {lang: find_stat_hh_vacancies(lang, 1) for lang in languages}
+    vacancies_summary_sj = {lang: find_stat_sj_vacancies(lang, sj_secret_key, 4) for lang in languages}
+    print(make_table(vacancies_summary_hh, "HeadHunter Moscow"))
+    print(make_table(vacancies_summary_sj, "Supejob Moscow"))
 
 
 if __name__ == "__main__":
