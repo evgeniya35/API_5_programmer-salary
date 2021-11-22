@@ -56,7 +56,7 @@ def filling_vacancies_salary(vacancies, predict_rub_salary):
     return salaries
 
 
-def find_stat_hh_vacancies(language, area=1):
+def find_vacancies_statistics_hh(language, area=1):
     payload = {
         "text": f"Программист {language}",
         "area": area,
@@ -88,12 +88,11 @@ def find_stat_hh_vacancies(language, area=1):
     }
 
 
-def find_stat_sj_vacancies(language, sj_secret_key, town=4):
+def find_vacancies_statistics_sj(language, sj_secret_key, town=4):
     payload = {
         "keyword": f"Программист {language}",
         "town": town,
-        "count": 100,
-        "catalogues": 33
+        "count": 100
         }
     headers = {"X-Api-App-Id": sj_secret_key}
     salaries = []
@@ -132,8 +131,8 @@ def main():
     town 12-Нижний Новгород, 4-Москва, 25-Краснодар... https://api.superjob.ru/2.0/towns/
     """
     languages = ["Python", "Java", "1C"]
-    vacancies_summary_hh = {lang: find_stat_hh_vacancies(lang, 1) for lang in languages}
-    vacancies_summary_sj = {lang: find_stat_sj_vacancies(lang, sj_secret_key, 4) for lang in languages}
+    vacancies_summary_hh = {lang: find_vacancies_statistics_hh(lang, 1) for lang in languages}
+    vacancies_summary_sj = {lang: find_vacancies_statistics_sj(lang, sj_secret_key, 4) for lang in languages}
     print(make_table(vacancies_summary_hh, "HeadHunter Moscow"))
     print(make_table(vacancies_summary_sj, "Supejob Moscow"))
 
