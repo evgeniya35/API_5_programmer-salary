@@ -75,10 +75,16 @@ def find_stat_hh_vacancies(language, area=1):
         if page >= vacancies["pages"] - 1:
             break
     salaries = filling_vacancies_salary(all_vacancies, predict_rub_salary_hh)
+    if salaries:
+        return {
+            "vacancies_found": vacancies["found"],
+            "vacancies_processed": len(salaries),
+            "average_salary": int(mean(salaries))
+        }
     return {
         "vacancies_found": vacancies["found"],
         "vacancies_processed": len(salaries),
-        "average_salary": int(mean(salaries))
+        "average_salary": None
     }
 
 
@@ -104,11 +110,18 @@ def find_stat_sj_vacancies(language, sj_secret_key, town=4):
         if not vacancies["more"]:
             break
     salaries = filling_vacancies_salary(all_vacancies, predict_rub_salary_sj)
+    if salaries:
+        return {
+            "vacancies_found": vacancies["total"],
+            "vacancies_processed": len(salaries),
+            "average_salary": int(mean(salaries))
+        }
     return {
         "vacancies_found": vacancies["total"],
         "vacancies_processed": len(salaries),
-        "average_salary": int(mean(salaries))
+        "average_salary": None
     }
+
 
 
 def main():
