@@ -50,7 +50,7 @@ def predict_rub_salary_hh(vacancy):
 def agregate_vacancies(vacancies, predict_rub_salary):
     salaries = []
     for vacancy in vacancies:
-        salary = predict_rub_salary(vacancy)  # predict_rub_salary = predict_rub_salary_hh, predict_rub_salary_sj
+        salary = predict_rub_salary(vacancy)
         if salary:
             salaries.append(int(salary))
     return salaries
