@@ -47,7 +47,7 @@ def predict_rub_salary_hh(vacancy):
     return predict_salary(vacancy["salary"]["from"], vacancy["salary"]["to"])
 
 
-def agregate_vacancies(vacancies, predict_rub_salary):
+def filling_vacancies_salary(vacancies, predict_rub_salary):
     salaries = []
     for vacancy in vacancies:
         salary = predict_rub_salary(vacancy)
@@ -74,7 +74,7 @@ def find_stat_hh_vacancies(language, area=1):
         all_vacancies.extend(vacancies["items"])
         if page >= vacancies["pages"] - 1:
             break
-    salaries = agregate_vacancies(all_vacancies, predict_rub_salary_hh)
+    salaries = filling_vacancies_salary(all_vacancies, predict_rub_salary_hh)
     return {
         "vacancies_found": vacancies["found"],
         "vacancies_processed": len(salaries),
@@ -103,7 +103,7 @@ def find_stat_sj_vacancies(language, sj_secret_key, town=4):
         all_vacancies.extend(vacancies["objects"])
         if not vacancies["more"]:
             break
-    salaries = agregate_vacancies(all_vacancies, predict_rub_salary_sj)
+    salaries = filling_vacancies_salary(all_vacancies, predict_rub_salary_sj)
     return {
         "vacancies_found": vacancies["total"],
         "vacancies_processed": len(salaries),
