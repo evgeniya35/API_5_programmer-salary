@@ -75,16 +75,11 @@ def find_vacancies_statistics_hh(language, area=1):
         if page >= vacancies["pages"] - 1:
             break
     salaries = fill_vacancies_salary(all_vacancies, predict_rub_salary_hh)
-    if salaries:
-        return {
-            "vacancies_found": vacancies["found"],
-            "vacancies_processed": len(salaries),
-            "average_salary": int(mean(salaries))
-        }
+    average_salary = int(mean(salaries)) if salaries else None
     return {
-        "vacancies_found": vacancies["found"],
+        "vacancies_found": vacancies["total"],
         "vacancies_processed": len(salaries),
-        "average_salary": None
+        "average_salary": average_salary
     }
 
 
@@ -109,30 +104,26 @@ def find_vacancies_statistics_sj(language, sj_secret_key, town=4):
         if not vacancies["more"]:
             break
     salaries = fill_vacancies_salary(all_vacancies, predict_rub_salary_sj)
-    if salaries:
-        return {
-            "vacancies_found": vacancies["total"],
-            "vacancies_processed": len(salaries),
-            "average_salary": int(mean(salaries))
-        }
+    average_salary = int(mean(salaries)) if salaries else None
     return {
         "vacancies_found": vacancies["total"],
         "vacancies_processed": len(salaries),
-        "average_salary": None
+        "average_salary": average_salary
     }
-
 
 
 def main():
     load_dotenv()
     sj_secret_key = os.getenv("SJ_SECRET_KEY")
-    """
-    area 66-Нижний Новгород, 1-Москва, 54-Краснодар... https://api.hh.ru/areas
-    town 12-Нижний Новгород, 4-Москва, 25-Краснодар... https://api.superjob.ru/2.0/towns/
-    """
     languages = ["Python", "Java", "1C"]
-    vacancies_summary_hh = {lang: find_vacancies_statistics_hh(lang, 1) for lang in languages}
-    vacancies_summary_sj = {lang: find_vacancies_statistics_sj(lang, sj_secret_key, 4) for lang in languages}
+    vacancies_summary_hh = {
+        lang: find_vacancies_statistics_hh(lang, 1)
+        for lang in languages
+        }
+    vacancies_summary_sj = {
+        lang: find_vacancies_statistics_sj(lang, sj_secret_key, 4)
+        for lang in languages
+        }
     print(make_table(vacancies_summary_hh, "HeadHunter Moscow"))
     print(make_table(vacancies_summary_sj, "Supejob Moscow"))
 
