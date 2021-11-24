@@ -77,7 +77,7 @@ def find_vacancies_statistics_hh(language, area=1):
     salaries = fill_vacancies_salary(all_vacancies, predict_rub_salary_hh)
     average_salary = int(mean(salaries)) if salaries else None
     return {
-        "vacancies_found": vacancies["total"],
+        "vacancies_found": vacancies["found"],
         "vacancies_processed": len(salaries),
         "average_salary": average_salary
     }
